@@ -1,0 +1,30 @@
+# Personal resume data (master, tailored output, build scratch). Never committed.
+# /setup creates workspace/ in whichever folder Claude Code runs from.
+workspace/
+
+# Full copies of third-party sources (local reference only, never shipped).
+# The committed knowledge/raw/ files are research notes.
+knowledge/raw/originals/
+
+# Local Claude Code settings
+.claude/settings.local.json
+
+# OS
+.DS_Store
+
+# Env files
+.env
+.env.*
+
+# Python
+__pycache__/
+*.py[cod]
+
+# LaTeX scratch, if anything is compiled outside workspace/build
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+engine/templates/*.pdf

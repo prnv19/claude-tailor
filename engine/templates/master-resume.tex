@@ -1,0 +1,224 @@
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{bookmarks=false, pdfstartview={}}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+% Contact icons: Font Awesome 7 where installed (TeX Live 2025 and later),
+% otherwise Font Awesome 5, which every TeX Live since 2018 ships.
+\IfFileExists{fontawesome7.sty}{\usepackage{fontawesome7}}{\usepackage{fontawesome5}}
+\usepackage{multicol}
+\setlength{\multicolsep}{-3.0pt}
+\setlength{\columnsep}{-1pt}
+\input{glyphtounicode}
+
+
+%----------FONT OPTIONS----------
+% sans-serif
+% \usepackage[sfdefault]{FiraSans}
+% \usepackage[sfdefault]{roboto}
+% \usepackage[sfdefault]{noto-sans}
+% \usepackage[default]{sourcesanspro}
+
+% serif
+% \usepackage{CormorantGaramond}
+% \usepackage{charter}
+
+
+\pagestyle{fancy}
+\fancyhf{} % clear all header and footer fields
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Adjust margins
+\addtolength{\oddsidemargin}{-0.6in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1.19in}
+\addtolength{\topmargin}{-.7in}
+\addtolength{\textheight}{1.4in}
+
+\urlstyle{same}
+
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Sections formatting
+\definecolor{sectioncolor}{RGB}{0,51,102}
+\titleformat{\section}{\scshape\raggedright\large\bfseries\color{sectioncolor}}{}{0em}{}[\color{sectioncolor}\titlerule]
+%\titleformat{\section}{\scshape\raggedright\large\bfseries}{}{0em}{}[\color{black}\titlerule]
+\titlespacing{\section}{0pt}{6pt}{10pt}
+
+% Ensure that generate pdf is machine readable/ATS parsable
+\pdfgentounicode=1
+
+%-------------------------
+% Centralized vertical rhythm (no \vspace hacks needed anywhere below)
+% Level 1 = each job/school/project entry inside \resumeSubHeadingListStart
+% Level 2 = the bullet points inside \resumeItemListStart
+\setlist[itemize,1]{topsep=0pt, partopsep=0pt, parsep=0pt, itemsep=3pt, leftmargin=0.15in, label={}}
+\setlist[itemize,2]{topsep=0pt, partopsep=0pt, parsep=0pt, itemsep=2pt, leftmargin=*}
+
+%-------------------------
+% Custom commands
+\newcommand{\resumeItem}[1]{
+  \item\small{#1}
+}
+
+\newcommand{\classesList}[4]{
+    \item\small{#1 #2 #3 #4}
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-10pt}\item
+    \begin{tabular*}{1.0\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & \textbf{\small #2} \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}
+}
+
+\newcommand{\resumeSubSubheading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \textit{\small#1} & \textit{\small #2} \\
+    \end{tabular*}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+    \vspace{-10pt}\item
+    \begin{tabular*}{1.001\textwidth}{l@{\extracolsep{\fill}}r}
+      \small#1 & \textbf{\small #2}\\
+    \end{tabular*}
+}
+
+\newcommand{\resumeSubItem}[1]{\resumeItem{#1}}
+
+\renewcommand\labelitemi{\textbullet}
+\renewcommand\labelitemii{\textbullet}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}}
+
+%-------------------------------------------
+%%%%%%  RESUME STARTS HERE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+% PLACEHOLDER CONTENT. Replace everything below \begin{document} with your
+% own facts, and leave the preamble above untouched: the checker compares
+% every tailored resume's preamble against this file. A master holds
+% EVERYTHING true about your career (all roles, projects, skills, numbers),
+% and each tailored resume picks from it. Every name, number, and link
+% below is fictional.
+
+\begin{center}
+    {\LARGE \scshape \color{sectioncolor} Your Name} \\ \vspace{1pt}
+    \small \href{tel:+15555550100}{\raisebox{-0.1\height}\faPhone\ \underline{555-555-0100}} ~ \href{mailto:you@example.com}{\raisebox{-0.2\height}\faEnvelope\  \underline{you@example.com}} ~
+    \href{https://www.linkedin.com/in/your-handle/}{\raisebox{-0.2\height}\faLinkedin\ \underline{linkedin.com/in/your-handle}}  ~
+    \href{https://github.com/your-handle}{\raisebox{-0.2\height}\faGithub\ \underline{github.com/your-handle}}
+\end{center}
+\vspace{-8pt}
+
+
+%-----------EDUCATION-----------
+\section{Education}
+  \resumeSubHeadingListStart
+    \resumeSubheading
+      {Example State University}{Aug. 2021 -- May 2023}
+      {Master of Science in Computer Science}{Springfield, IL}
+      \resumeItemListStart
+        \resumeItem{\textbf{Relevant Coursework:} Machine Learning, Distributed Systems, Statistical Inference, Database Systems, Natural Language Processing}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Example Institute of Technology}{Aug. 2017 -- May 2021}
+      {Bachelor of Science in Computer Engineering}{Riverside, CA}
+      \resumeItemListStart
+        \resumeItem{\textbf{Relevant Coursework:} Data Structures \& Algorithms, Operating Systems, Computer Networks, Linear Algebra, Probability \& Statistics}
+      \resumeItemListEnd
+  \resumeSubHeadingListEnd
+
+%-----------EXPERIENCE-----------
+% Entries stay reverse-chronological. Internship/co-op/trainee titles get
+% exactly 1 bullet in a tailored resume, other roles 2-3 (Hard Constraint 11).
+% The master itself may hold more bullets per role than any tailor will use.
+\section{Experience}
+  \resumeSubHeadingListStart
+
+    \resumeSubheading
+      {Acme Analytics}{Jun. 2024 -- Present}
+      {Data Scientist}{Austin, TX}
+      \resumeItemListStart
+        \resumeItem{Built a churn-risk model in Python (XGBoost, scikit-learn) over 2M customer records, flagging at-risk accounts 30 days earlier and lifting retention-campaign conversion by 12\%.}
+        \resumeItem{Designed an A/B testing framework in SQL and Python adopted by 4 product teams, cutting experiment readout time from 5 days to 1 day.}
+        \resumeItem{Automated weekly KPI reporting with Airflow and dbt, replacing 6 hours of manual spreadsheet work per week with a scheduled, monitored pipeline.}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Globex Logistics}{Jul. 2023 -- May 2024}
+      {Machine Learning Engineer}{Chicago, IL}
+      \resumeItemListStart
+        \resumeItem{Shipped a demand-forecasting service (PyTorch, FastAPI, Docker) used by 300 warehouses, reducing stockouts by 18\% over two quarters.}
+        \resumeItem{Cut p95 inference latency from 220ms to 45ms by quantizing the forecasting model and batching requests on AWS SageMaker.}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Initech}{Jun. 2022 -- Aug. 2022}
+      {Data Science Intern}{Remote}
+      \resumeItemListStart
+        \resumeItem{Prototyped a ticket-routing classifier with Hugging Face Transformers that sorted 10,000+ support tickets per month at 91\% accuracy.}
+      \resumeItemListEnd
+
+  \resumeSubHeadingListEnd
+
+%-----------PROJECTS-----------
+\section{Projects}
+    \resumeSubHeadingListStart
+    \resumeProjectHeading
+          {\textbf{Retrieval-Augmented Course Assistant} $|$ \emph{Python, LangChain, FAISS, FastAPI}}{}
+          \resumeItemListStart
+            \resumeItem{Engineered a RAG assistant over 5,000 course documents, raising answer faithfulness from 0.71 to 0.88 on a 200-question evaluation set by adding hybrid search and a reranking stage.}
+          \resumeItemListEnd
+
+    \resumeProjectHeading
+          {\textbf{Real-Time Transit Delay Dashboard} $|$ \emph{Python, Kafka, PostgreSQL, Streamlit}}{}
+          \resumeItemListStart
+            \resumeItem{Streamed live GPS feeds for 120 buses through Kafka into PostgreSQL and mapped delay hotspots in a Streamlit dashboard refreshed every 30 seconds.}
+          \resumeItemListEnd
+
+    \resumeSubHeadingListEnd
+%
+%-----------PROGRAMMING SKILLS-----------
+\section{Technical Skills}
+ \begin{itemize}[leftmargin=0.15in, label={}]
+\small{\item{
+     \textbf{Languages} {: Python, SQL, R, Java, Bash} \\
+     \textbf{ML \& Data Science} {: PyTorch, scikit-learn, XGBoost, Hugging Face Transformers, Pandas, NumPy} \\
+     \textbf{Data \& MLOps} {: Airflow, dbt, Kafka, Docker, MLflow, AWS (S3, SageMaker), PostgreSQL} \\
+     \textbf{Tools} {: Git, Linux, Tableau, Streamlit, FastAPI} \\
+    }}
+ \end{itemize}
+
+ %
+%-----------Publications-----------
+% Optional section. Delete it if you have no publications.
+\section{Publications}
+ \begin{itemize}[leftmargin=0.15in, label={}]
+    \small{
+    \item \textit{Co-authored \textbf{"An Example Paper Title on Demand Forecasting,"} Example Workshop on Applied Machine Learning (EWAML 2023), Example Press, pp. 1-10.}
+    }
+     \end{itemize}
+
+\end{document}

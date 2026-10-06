@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(engine/scripts/compile.sh *)",
+      "Bash(./engine/scripts/compile.sh *)",
+      "Bash(bash engine/scripts/compile.sh *)",
+      "Bash(engine/scripts/check_resume.py *)",
+      "Bash(python3 engine/scripts/check_resume.py *)"
+    ],
+    "deny": [
+      "Bash(ls workspace/tailored)",
+      "Bash(ls workspace/tailored/)",
+      "Bash(find workspace/tailored *)",
+      "Bash(tree workspace/tailored *)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Read|Write|Edit|Glob|Grep",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/hooks/guard_workspace.py\"",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}

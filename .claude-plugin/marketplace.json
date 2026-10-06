@@ -1,0 +1,14 @@
+{
+  "name": "resume-tailorer",
+  "description": "Resume Tailorer: tailor one-page LaTeX resumes and cover letters to job descriptions.",
+  "owner": {
+    "name": "Pranav Unnikrishnan"
+  },
+  "plugins": [
+    {
+      "name": "resume-tailorer",
+      "source": "./",
+      "description": "Tailor a one-page LaTeX resume and cover letter to any job description, from your master resume."
+    }
+  ]
+}
