@@ -30,7 +30,7 @@ All questions go through `AskUserQuestion` as choices with a one-line consequenc
 From the preflight:
 
 - `python3=MISSING`: required for the constraint checker. Point to python.org or `brew install python`.
-- `pdflatex=MISSING`: required to produce PDFs. macOS: MacTeX (`brew install --cask mactex-no-gui`). Debian/Ubuntu: `sudo apt-get install texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra texlive-lang-english`. Windows: MiKTeX or TeX Live.
+- `pdflatex=MISSING`: required to produce PDFs. macOS: MacTeX (`brew install --cask mactex-no-gui`). Debian/Ubuntu: `sudo apt-get install texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra texlive-lang-english`. Windows: MiKTeX (https://miktex.org/) or TeX Live.
 - `latex-packages=MISSING <names>`: the template's preamble needs these, and the names are TeX Live package names. TeX Live, MacTeX, or BasicTeX: `sudo tlmgr install <names>`. Debian/Ubuntu (where `tlmgr` is disabled): the `apt-get` line above. MiKTeX: its console, or let it install on first compile.
 - `pdftotext=MISSING`: optional. It gives the overflow line count and the plain-text ATS check. macOS: `brew install poppler`. Debian/Ubuntu: `sudo apt-get install poppler-utils`. Mention it once, never ask about it: without it, PDFs are read directly.
 

@@ -69,7 +69,7 @@ The agent never invents experience or metrics. If the JD asks for something you 
 | **Python 3** (standard library only) | Runs the mechanical checks and the workspace guard |
 | **`pdftotext`** (poppler), optional | Counts overflow lines and runs the plain-text ATS check. Without it, the agent reads PDFs directly |
 
-**Install LaTeX.** macOS: `brew install --cask mactex-no-gui` (BasicTeX works too, after `sudo tlmgr install` of the packages `/setup` names). Ubuntu/Debian: `sudo apt-get install texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra texlive-lang-english`. Windows: MiKTeX, with Claude Code running on Git Bash (the engine scripts are bash). `/setup` checks every file the template's preamble loads and gives the exact install command for anything missing.
+**Install LaTeX.** macOS: `brew install --cask mactex-no-gui` (BasicTeX works too, after `sudo tlmgr install` of the packages `/setup` names). Ubuntu/Debian: `sudo apt-get install texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra texlive-lang-english`. Windows: [MiKTeX](https://miktex.org/), with Claude Code running on Git Bash (the engine scripts are bash). `/setup` checks every file the template's preamble loads and gives the exact install command for anything missing.
 
 **Install `pdftotext`** (optional): `brew install poppler` on macOS, `sudo apt-get install poppler-utils` on Ubuntu/Debian.
 

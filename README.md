@@ -10,7 +10,7 @@ It works for any field. Tailoring selects the most relevant content from your ow
 
 ## Quick start
 
-1. **Install** [Claude Code](https://claude.com/claude-code), Python 3, and a LaTeX distribution: [MacTeX](https://www.tug.org/mactex/) on macOS (`brew install --cask mactex-no-gui`), [TeX Live](https://www.tug.org/texlive/) on Linux, MiKTeX on Windows. `/setup` checks every package the template needs and gives the exact install command for anything missing.
+1. **Install** [Claude Code](https://claude.com/claude-code), Python 3, and a LaTeX distribution: [MacTeX](https://www.tug.org/mactex/) on macOS (`brew install --cask mactex-no-gui`), [TeX Live](https://www.tug.org/texlive/) on Linux, [MiKTeX](https://miktex.org/) on Windows. `/setup` checks every package the template needs and gives the exact install command for anything missing.
 2. **Install the plugin** from inside Claude Code:
 
    ```
