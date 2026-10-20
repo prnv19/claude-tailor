@@ -7,12 +7,12 @@ status: draft
 
 # Cover Letters
 
-How to write a tailored cover letter for a specific `tailored/<Company>/<Role>/` application. Invoked by the `/cover` skill (`skills/cover/SKILL.md`). This page is the authoritative rulebook for cover letter generation.
+How to write a tailored cover letter for a specific `applications/<Company>/<Role>/` application. Invoked by the `/cover` skill (`skills/cover/SKILL.md`). This page is the authoritative rulebook for cover letter generation.
 
 ## Rules for the tailoring agent
 
 1. **On-request only.** Generate a cover letter only when the candidate invokes `/cover` or explicitly asks. Never bundle one into a `tailor` pass uninvited.
-2. **Read order before drafting**: this page, then [[voice]], then the role's `resume.tex` + `resume-diff.md` (facts and approved phrasing), then the JD (`jd.md` if saved, otherwise ask the user to paste it). `master-resume.tex` is the fact fallback.
+2. **Read order before drafting**: this page, then [[voice]], then the role's `resume.tex` + `resume-diff.md` (facts and approved phrasing), then the JD (`jd.md` if saved, otherwise from a file the user saves into `workspace/inbox/`). `master-resume.tex` is the fact fallback.
 3. **Pain-point extraction**: pull the top 3 tasks from the JD's "What you'll do" / responsibilities section. The letter must address at least 2 of them with concrete evidence. Requirements lists are secondary.
 4. **Complement, never repeat the resume**: pick 2-3 of the strongest JD-relevant achievements and give them context and narrative ("why should they care"). Do not enumerate jobs or restate bullets.
 5. **Speak their dialect**: mirror JD vocabulary exactly in prose, same casing discipline as [[keywords-and-skills]].
@@ -30,9 +30,9 @@ How to write a tailored cover letter for a specific `tailored/<Company>/<Role>/`
     \addtolength{\topmargin}{-0.25in}
     \addtolength{\textheight}{0.5in}
     ```
-    (~0.75in margins, header contact line still fits one line) and drop `\raggedright` (keep `\raggedbottom`) so body paragraphs justify like a normal letter. **Dropping `\raggedright` re-enables `article`'s default first-line paragraph indent** (invisible in the resume, which keeps `\raggedright`) — immediately add `\setlength{\parindent}{0pt}` after the margin block so paragraphs stay flush-left, not indented. (A real letter once shipped indented because this line was missing, so it is mandatory.) Separate date/greeting/paragraphs/signature with `\vspace{16pt}`, and use `\vspace{20pt}` before "Sincerely,". Outputs are `cover-letter.tex` + `cover-letter.pdf` in `tailored/<Company>/<Role>/`, compile scratch in `build/<Company>/<Role>/`, same hygiene as resumes.
+    (~0.75in margins, header contact line still fits one line) and drop `\raggedright` (keep `\raggedbottom`) so body paragraphs justify like a normal letter. **Dropping `\raggedright` re-enables `article`'s default first-line paragraph indent** (invisible in the resume, which keeps `\raggedright`) — immediately add `\setlength{\parindent}{0pt}` after the margin block so paragraphs stay flush-left, not indented. (A real letter once shipped indented because this line was missing, so it is mandatory.) Separate date/greeting/paragraphs/signature with `\vspace{16pt}`, and use `\vspace{20pt}` before "Sincerely,". Outputs are `cover-letter.tex` + `cover-letter.pdf` in `applications/<Company>/<Role>/`, compile scratch in `build/<Company>/<Role>/`, same hygiene as resumes.
 13. **Education tense**: if the newest Education end date in master is in the past, describe that degree as completed (past tense), never "pursuing" or "expected to graduate". If it reads "Present" or a future month, "pursuing" is correct. (see Synthesis; mechanically checked by `check_resume.py`)
-14. **Never reference tailored resumes (or old cover letters) as a template source.** Any file under `tailored/<Company>/<Role>/` (a tailored `resume.tex`, its `resume-diff.md`, or a previous `cover-letter.tex`) may only supply approved facts/phrasing (Rule 2), never the LaTeX preamble, header block, or layout. `master-resume.tex` is the sole template source, always.
+14. **Never reference tailored resumes (or old cover letters) as a template source.** Any file under `applications/<Company>/<Role>/` (a tailored `resume.tex`, its `resume-diff.md`, or a previous `cover-letter.tex`) may only supply approved facts/phrasing (Rule 2), never the LaTeX preamble, header block, or layout. `master-resume.tex` is the sole template source, always.
 15. **Hard Constraint 8 does not apply to cover letters.** The template-spacing lock exists to protect the resume's one-page fit against a career's worth of content, and a short letter has no such pressure. `engine/scripts/check_resume.py` enforces HC8 (preamble-verbatim, vspace-allowlist) on `resume.tex` only. Cover letters use the standard-letter margins/spacing in Rule 12 instead, and deviating from the master's *resume* spacing there is expected, not a violation. Hard Constraints 1 (one page), 3 (truthful), 5 (no em dashes), and 6 (no semicolons/colons) still apply to letters in full.
 
 ## Synthesis

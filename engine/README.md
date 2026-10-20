@@ -9,10 +9,10 @@ Every script takes an optional `-C <project-dir>` first, like `git -C`: the fold
 | Script | What it does |
 |--------|--------------|
 | `scripts/workspace.sh status` | Prints toolchain and workspace state as `key=value` lines, injected into each skill's preflight: `workspace`, `python3`, `pdflatex`, `latex-packages` (the TeX Live names of any missing packages), `pdftotext`, `master` (`ok`, `placeholder`, or `MISSING`), `gitignore`, `today`. Always exits 0 |
-| `scripts/workspace.sh init` | Creates `workspace/tailored/` and `workspace/build/` and copies the template in as the master. Never overwrites a master |
+| `scripts/workspace.sh init` | Creates `workspace/applications/` and `workspace/build/` and copies the template in as the master. Never overwrites a master |
 | `scripts/workspace.sh backup` | Copies the master to `workspace/master-resume.backup-<date>.tex`, never overwriting an earlier backup |
 | `scripts/workspace.sh compile-master` | Compiles the master into `workspace/build/_master/` and reports its page count. Only a LaTeX error fails it |
-| `scripts/scaffold.sh <Company> <Role>` | Copies `workspace/master-resume.tex` to `workspace/tailored/<Company>/<Role>/resume.tex`. Refuses to overwrite |
+| `scripts/scaffold.sh <Company> <Role>` | Copies `workspace/master-resume.tex` to `workspace/applications/<Company>/<Role>/resume.tex`. Refuses to overwrite |
 | `scripts/compile.sh <Company> <Role> [tex ...]` | Compiles `resume.tex` (and `cover-letter.tex` if present) into `workspace/build/<Company>/<Role>/`, copies the PDFs next to their sources, then runs the checker. Non-zero exit on any failure |
 | `scripts/check_resume.py <Company> <Role> [--build-dir DIR]` | Mechanical Hard Constraint checks against the master: one page (counting the lines that spilled past it when `pdftotext` is installed), preamble and spacing fidelity, Experience entries unchanged and reverse-chronological, every entry heading copied from master, numeric fidelity, bullet caps, fresh drafting, unique and strong openers, punctuation bans. For cover letters: fluff words, cliches, and degree tense (derived from master's Education dates) |
 

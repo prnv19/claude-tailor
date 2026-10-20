@@ -8,10 +8,10 @@
       "Bash(python3 engine/scripts/check_resume.py *)"
     ],
     "deny": [
-      "Bash(ls workspace/tailored)",
-      "Bash(ls workspace/tailored/)",
-      "Bash(find workspace/tailored *)",
-      "Bash(tree workspace/tailored *)"
+      "Bash(ls workspace/applications)",
+      "Bash(ls workspace/applications/)",
+      "Bash(find workspace/applications *)",
+      "Bash(tree workspace/applications *)"
     ]
   },
   "hooks": {

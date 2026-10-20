@@ -5,7 +5,7 @@ Usage:
     engine/scripts/check_resume.py [-C PROJECT_DIR] <Company> <Role> [--build-dir DIR]
 
 Checks every grep-able Hard Constraint (engine/rules/hard-constraints.md) against
-workspace/tailored/<Company>/<Role>/resume.tex (and cover-letter.tex
+workspace/applications/<Company>/<Role>/resume.tex (and cover-letter.tex
 if present), using workspace/master-resume.tex as the source of truth:
 
   resume.tex
@@ -228,7 +228,7 @@ def num_tokens(text: str) -> set:
 
     A token is any run of alphanumerics/commas/dots holding at least one
     digit, so plain metrics ("94", "97.3", "1,200") and versioned
-    identifiers ("TD3", "ROS2", "7B", "v2") both round-trip. Commas and
+    identifiers ("Q3", "S3", "7B", "v2") both round-trip. Commas and
     edge dots are dropped and the token is lowercased, so "1,200" matches
     "1200". Backslashes and "$" break runs, so "\\%" and "$\\sim$500"
     yield "500" rather than dragging markup into the token.
@@ -400,7 +400,7 @@ def check_numeric_fidelity(rep: Report, fname: str, secs: dict, master_secs: dic
     invented, drifted ("97.3%" -> "97%"), or moved between roles. Experience
     is scoped per employer so a metric cannot migrate from one job to
     another; other sections are scoped to the same section in master, whose
-    headings supply tech-stack tokens like "ROS2" and "S3".
+    headings supply tokens like "S3" or "ISO 9001".
 
     Employers missing from master are skipped here, since the heading check
     already reports them. A section master doesn't have
@@ -808,7 +808,7 @@ def main():
         WORKSPACE = Path(args.project) / "workspace"
         MASTER = WORKSPACE / "master-resume.tex"
 
-    tailored = WORKSPACE / "tailored" / args.company / args.role
+    tailored = WORKSPACE / "applications" / args.company / args.role
     build_dir = args.build_dir or WORKSPACE / "build" / args.company / args.role
     if not tailored.is_dir():
         sys.exit(f"No such tailored dir: {tailored}")

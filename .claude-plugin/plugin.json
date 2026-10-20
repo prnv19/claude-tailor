@@ -1,10 +1,11 @@
 {
   "name": "resume-tailorer",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Tailor a one-page LaTeX resume and cover letter to any job description, from your master resume, with diff-first review and machine-checked truthfulness.",
   "author": {
     "name": "Pranav Unnikrishnan"
   },
   "repository": "https://github.com/prnv19/claude-tailor",
+  "license": "MIT",
   "keywords": ["resume", "latex", "ats", "job-search", "cover-letter"]
 }

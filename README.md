@@ -18,8 +18,8 @@ It works for any field. Tailoring selects the most relevant content from your ow
    /plugin install resume-tailorer@resume-tailorer
    ```
 
-   (From a local clone: `claude --plugin-dir /path/to/Resume-Tailorer`.)
-3. **Start Claude Code in a folder for your job search** and build your master from your current resume:
+   (From a local clone: `claude --plugin-dir /path/to/claude-tailor`.)
+3. **Start Claude Code in a folder for your job search** and build your master from your current resume (pass its path, or save it in that folder and run `/setup` on its own):
 
    ```bash
    mkdir ~/job-search && cd ~/job-search && claude
@@ -29,15 +29,15 @@ It works for any field. Tailoring selects the most relevant content from your ow
    /setup ~/Documents/my-resume.pdf
    ```
 
-4. **Tailor:** `/tailor` followed by the pasted job description. It asks for anything missing (company, role, or the JD itself). Review the diff and answer the three choice gates (clarifiers, gaps, proceed). Nothing is written until you pick a proceed option.
-5. **Get the PDF** at `workspace/tailored/<Company>/<Role>/resume.pdf`. Optionally run `/cover` for a matching letter.
+4. **Tailor:** run `/tailor` and paste the job description, or `/tailor file: <path>` if you saved it in a file. It asks for anything missing (the JD, the company, or the role). Review the diff and answer the three choice gates (clarifiers, gaps, proceed). Nothing is written until you pick **Proceed to tailor**.
+5. **Get the PDF** at `workspace/applications/<Company>/<Role>/resume.pdf`. Optionally run `/cover` for a matching letter.
 
 Your data never lives in the plugin. It goes in a `workspace/` folder inside whatever directory you run Claude Code from:
 
 ```
 ~/job-search/workspace/
 ├── master-resume.tex             ← your master (built by /setup)
-├── tailored/<Company>/<Role>/    ← resume.tex, resume-diff.md, jd.md, resume.pdf (+ cover-letter.tex/.pdf)
+├── applications/<Company>/<Role>/    ← resume.tex, resume-diff.md, jd.md, resume.pdf (+ cover-letter.tex/.pdf)
 └── build/                        ← pdflatex scratch, safe to delete
 ```
 
@@ -50,7 +50,7 @@ Your data never lives in the plugin. It goes in a `workspace/` folder inside wha
 | Command | What it does |
 |---------|--------------|
 | `/setup [resume file]` | Checks the toolchain, creates `workspace/`, imports your resume (PDF/DOCX/.tex/text) into the master, compiles it |
-| `/tailor <pasted JD>` | Derives Company/Role from the JD (asks if missing) → selects from master → diff → choice gates → writes files → compile + check |
+| `/tailor <JD>` or `/tailor file: <path>` | Takes the pasted JD (or the file you name), derives Company/Role from the JD (asks if missing) → selects from master → diff → choice gates → writes files → compile + check |
 | `/cover [Company] [role-slug]` | Cover letter for an existing tailored application (on request only) |
 
 If another plugin or command already uses one of these names, use the namespaced form, e.g. `/resume-tailorer:tailor`.
@@ -67,7 +67,7 @@ If another plugin or command already uses one of these names, use the namespaced
 - **Bullet caps.** Internships 1 bullet, other roles 2-3, projects 1 (max 2) (machine-checked).
 - **Every experience entry stays**, in reverse-chronological order (machine-checked).
 - **No em dashes, semicolons, or colons** as connectors in bullets, diffs, or letters (machine-checked in the `.tex` files).
-- **Past applications are write-once.** The agent never browses `workspace/tailored/` (hook-enforced).
+- **Past applications are write-once.** The agent never browses `workspace/applications/` (hook-enforced).
 
 ---
 
@@ -87,7 +87,7 @@ Tested on macOS. The engine scripts are bash, so on Windows Claude Code needs Gi
 ## Repository layout
 
 ```
-Resume-Tailorer/              the plugin root
+claude-tailor/                the plugin root
 ├── .claude-plugin/           plugin.json, marketplace.json
 ├── skills/
 │   ├── setup/                /setup: toolchain check, import your resume into the master
@@ -119,4 +119,8 @@ See [`knowledge/wiki/index.md`](./knowledge/wiki/index.md) for the full catalog.
 ## Credits and sources
 
 - The LaTeX template's macro layer descends from [Jake's Resume](https://github.com/jakegut/resume) (MIT). The styling and spacing are this project's own.
-- `knowledge/raw/` holds research notes on each source (key claims and short quotes), not copies of the articles. Provenance and any full copies stay local in `knowledge/raw/originals/`, which is gitignored. Note that earlier commits in this repo's history still contain the full clips.
+- `knowledge/raw/` holds research notes on each source (key claims and short quotes), not copies of the articles. Provenance and any full copies stay local in `knowledge/raw/originals/`, which is gitignored.
+
+## License
+
+[MIT](./LICENSE). The template's Jake's Resume notice is included in the same file.

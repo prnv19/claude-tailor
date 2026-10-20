@@ -28,12 +28,12 @@ Resume-Tailorer/                  # = the plugin root (CLAUDE_PLUGIN_ROOT when i
     cover/SKILL.md                # /cover
   hooks/
     hooks.json                    # plugin hook registration (PreToolUse guard)
-    guard_workspace.py            # blocks browsing workspace/tailored/ (Hard Constraint 9)
+    guard_workspace.py            # blocks browsing workspace/applications/ (Hard Constraint 9)
   engine/
     rules/hard-constraints.md     # SCHEMA: the 12 Hard Constraints (overrides the wiki)
     scripts/
       workspace.sh                # status | init | backup | compile-master (/setup and every preflight)
-      scaffold.sh                 # scaffold tailored/<Company>/<Role>/resume.tex from master
+      scaffold.sh                 # scaffold applications/<Company>/<Role>/resume.tex from master
       compile.sh                  # canonical compile + runs check_resume.py
       check_resume.py             # mechanical Hard Constraint checker
     templates/master-resume.tex   # the LaTeX template with fictional placeholder content
@@ -58,7 +58,7 @@ Resume-Tailorer/                  # = the plugin root (CLAUDE_PLUGIN_ROOT when i
 3. **Skill paths.** Skills reference bundled files as `${CLAUDE_PLUGIN_ROOT}/...` (repo-wide) or `${CLAUDE_SKILL_DIR}/...` (own folder), and call scripts as `bash "${CLAUDE_PLUGIN_ROOT}/engine/scripts/<name>.sh" -C "${CLAUDE_PROJECT_DIR}" ...` so the `allowed-tools` patterns match. Claude Code substitutes all three variables in both the skill body and `allowed-tools`. Keep each skill's `allowed-tools` in sync with the commands its body tells the agent to run. A `!` preflight command that isn't pre-approved aborts the whole skill outside auto mode. The plugin lives outside the user's folder, where the Read tool asks permission, so a skill that reads bundled files lists `Read(/${CLAUDE_PLUGIN_ROOT}/**)` (the extra `/` makes the substituted path absolute). A `*` inside a quoted path, as in `Bash(cat "${CLAUDE_PLUGIN_ROOT}/*)`, doesn't match (a trailing ` *` after the full script path does), so read bundled files with Read, not `cat`.
 4. **Guard hook trap.** `hooks/hooks.json` and `.claude/settings.json` both run `hooks/guard_workspace.py` by path before every Bash/Read/Write/Edit/Glob/Grep call. If that file is missing, Python exits 2, Claude Code treats that as a block, and every tool call (even `!` shell commands) fails until it is fixed from a terminal outside Claude Code. To move or rename it: copy to the new path, update both registrations, then delete the old file.
 5. **Test before committing.** `claude plugin validate --strict .`, then exercise changed skills with `claude --plugin-dir .` from a scratch folder (not this repo) so the workspace logic is tested the way users hit it. Bump `version` in `plugin.json` for any user-visible change.
-6. **The template preamble is a contract.** `check_resume.py` compares every tailored preamble against the user's master. Changing `templates/master-resume.tex`'s preamble only affects new masters, and invalidates the measured page capacity in `skills/tailor/references/sizing.md` (re-measure it). `LATEX_NEEDS` in `workspace.sh` lists the files the preamble loads, so update it with any package change.
+6. **The template preamble is a contract.** `check_resume.py` compares every tailored preamble against the user's master. Changing `templates/master-resume.tex`'s preamble only affects new masters, and invalidates the measured page capacity in `skills/tailor/references/sizing.md` (re-measure it). `LATEX_NEEDS` in `workspace.sh` lists the files the preamble loads, so update it with any package change. Users can also keep their own `.tex` layout: `/setup` Step 4b adds an interface block defining the engine's commands (`\resumeSubheading`, `\resumeSubSubheading`, `\resumeProjectHeading`, `\resumeItem`, the list start/end pairs) in their styling, and records a measured capacity in `workspace/layout.md`. Any new command the engine starts reading must be added to that list in Step 4b.
 7. **No app code here.** A future web app would call `engine/` with `-C` pointing at each user's folder and read `knowledge/` and `engine/rules/`. It never duplicates their rules.
 8. **Privacy.** `workspace/` is gitignored. Never commit resumes, JDs, or PDFs, and never write a candidate's facts into `knowledge/` or a skill.
 

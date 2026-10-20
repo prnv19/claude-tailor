@@ -4,15 +4,33 @@
 # Usage: engine/scripts/workspace.sh [-C <project-dir>] <command>
 #
 #   status          Print one key=value line per check (toolchain + workspace
-#                   state). Always exits 0, so skills can inject it as context.
-#   init            Create workspace/{tailored,build}/ and copy the template in
+#                   state) plus the files waiting in workspace/inbox/. Always
+#                   exits 0, so skills can inject it as context.
+#   init            Create workspace/{inbox,applications,build}/ and copy the template in
 #                   as workspace/master-resume.tex. Never overwrites a master.
 #   backup          Copy the master to workspace/master-resume.backup-<date>.tex,
 #                   never overwriting an earlier backup.
 #   compile-master  Compile workspace/master-resume.tex into
 #                   workspace/build/_master/ and report its page count. The
 #                   master may run past one page (it holds everything), so only
-#                   a LaTeX error fails this.
+#                   a LaTeX error fails this. With pdftotext and a master
+#                   longer than one page, also prints page1-lines=<n>: the
+#                   rendered page capacity of the master's layout. Also
+#                   copies the PDF to <project-dir>/master-resume.pdf, so the
+#                   user can open it for review next to their own files.
+#   approve-master  Move that review copy to workspace/master-resume.pdf once
+#                   the user approves it (replacing an earlier approved copy).
+#   intake <file>   Move <project-dir>/<file> (a resume or JD the user saved in
+#                   the folder they run Claude Code from) into workspace/inbox/.
+#                   Never overwrites a file already in the inbox.
+#   done <file>     Move workspace/inbox/<file> to workspace/inbox/processed/
+#                   (date-prefixed) once a skill has used it, so the next run
+#                   only sees new files. Never deletes anything.
+#
+# Input files (a resume for /setup, a job description for /tailor and /cover)
+# come as files, not pasted text. The user saves them in the project folder,
+# status lists them as project-file=, and the skill moves the right one into
+# workspace/inbox/ with intake. Files already in the inbox also count.
 #
 # The workspace is <project-dir>/workspace. Skills pass -C with the project
 # dir because Claude's shell may have cd'd elsewhere. Without -C (or with an
@@ -23,7 +41,7 @@ set -u
 
 SCRIPTS="$(cd "$(dirname "$0")" && pwd)"
 TEMPLATE="$SCRIPTS/../templates/master-resume.tex"
-USAGE="Usage: engine/scripts/workspace.sh [-C <project-dir>] status|init|backup|compile-master"
+USAGE="Usage: engine/scripts/workspace.sh [-C <project-dir>] status|init|backup|compile-master|approve-master|intake <file>|done <file>"
 
 PROJECT="${CLAUDE_PROJECT_DIR:-$PWD}"
 if [ "${1:-}" = "-C" ]; then
@@ -33,6 +51,7 @@ if [ "${1:-}" = "-C" ]; then
 fi
 WORKSPACE="$PROJECT/workspace"
 MASTER="$WORKSPACE/master-resume.tex"
+INBOX="$WORKSPACE/inbox"
 
 # file:package for everything the template's preamble loads (package = the
 # TeX Live name to install). The icon font is checked separately, because the
@@ -94,6 +113,17 @@ status() {
   else
     echo "master=ok"
   fi
+  # stock = the master still uses the bundled template's preamble, custom =
+  # the user's own layout (adapted by /setup). Custom layouts record their
+  # measured page capacity in workspace/layout.md.
+  if [ -f "$MASTER" ]; then
+    if [ "$(sed '/\\begin{document}/,$d' "$MASTER")" = "$(sed '/\\begin{document}/,$d' "$TEMPLATE")" ]; then
+      echo "template=stock"
+    else
+      echo "template=custom"
+      if [ -f "$WORKSPACE/layout.md" ]; then echo "layout=ok"; else echo "layout=MISSING"; fi
+    fi
+  fi
   # Is the workspace protected from git? Only matters inside a git repo.
   if git -C "$PROJECT" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     if git -C "$PROJECT" check-ignore -q "$MASTER"; then
@@ -105,6 +135,28 @@ status() {
     echo "gitignore=not-a-repo"
   fi
   echo "today=$(date +%Y-%m-%d)"
+  # Input files the user dropped in, one inbox-file= line each (newest first).
+  if [ -d "$INBOX" ]; then
+    local f found=0
+    while IFS= read -r f; do
+      [ -f "$INBOX/$f" ] || continue
+      case "$f" in .*) continue ;; esac
+      echo "inbox-file=$INBOX/$f"
+      found=1
+    done < <(ls -t "$INBOX")
+    [ "$found" = 1 ] || echo "inbox=empty"
+  else
+    echo "inbox=MISSING"
+  fi
+  # Candidate inputs saved directly in the project folder (top level only).
+  local p
+  while IFS= read -r p; do
+    [ -f "$PROJECT/$p" ] || continue
+    case "$p" in
+      .* | README* | CLAUDE.md | LICENSE* | master-resume.pdf) continue ;;
+      *.pdf | *.PDF | *.docx | *.doc | *.tex | *.md | *.txt) echo "project-file=$PROJECT/$p" ;;
+    esac
+  done < <(ls -t "$PROJECT")
 }
 
 init() {
@@ -112,7 +164,7 @@ init() {
     echo "No such folder: $PROJECT" >&2
     exit 1
   fi
-  mkdir -p "$WORKSPACE/tailored" "$WORKSPACE/build"
+  mkdir -p "$INBOX" "$WORKSPACE/applications" "$WORKSPACE/build"
   if [ -f "$MASTER" ]; then
     echo "kept: $MASTER (already exists, not overwritten)"
   else
@@ -156,6 +208,57 @@ compile_master() {
   # pdflatex wraps long log lines, so join them before matching.
   pages="$(tr -d '\n' < "$build/master-resume.log" | grep -o 'Output written on [^(]*([0-9]* page' | grep -o '([0-9]*' | tr -d '(')"
   echo "compiled: $build/master-resume.pdf (${pages:-?} page(s))"
+  cp "$build/master-resume.pdf" "$PROJECT/master-resume.pdf"
+  echo "review copy: $PROJECT/master-resume.pdf"
+  # Page 1 of a master that runs past one page is a full page, so its text
+  # line count is the layout's capacity.
+  if [ "${pages:-1}" -gt 1 ] && command -v pdftotext >/dev/null 2>&1; then
+    echo "page1-lines=$(pdftotext -layout -f 1 -l 1 "$build/master-resume.pdf" - | grep -c '[^[:space:]]')"
+  fi
+}
+
+approve_master() {
+  if [ ! -f "$PROJECT/master-resume.pdf" ]; then
+    echo "No review copy at $PROJECT/master-resume.pdf (run compile-master first)" >&2
+    exit 1
+  fi
+  mv "$PROJECT/master-resume.pdf" "$WORKSPACE/master-resume.pdf"
+  echo "approved: $WORKSPACE/master-resume.pdf"
+}
+
+intake() {
+  local name="${1:-}" dest
+  case "$name" in
+    "" | */* | .*) echo "intake takes a file name in the project folder" >&2; exit 2 ;;
+  esac
+  if [ ! -f "$PROJECT/$name" ]; then
+    echo "Not in the project folder: $PROJECT/$name" >&2
+    exit 1
+  fi
+  mkdir -p "$INBOX"
+  dest="$INBOX/$name"
+  if [ -e "$dest" ]; then
+    echo "Already in the inbox: $dest (not overwritten)" >&2
+    exit 1
+  fi
+  mv "$PROJECT/$name" "$dest"
+  echo "moved: $dest"
+}
+
+done_file() {
+  local name="${1:-}" dest
+  case "$name" in
+    "" | */* | .*) echo "done takes a file name inside workspace/inbox/" >&2; exit 2 ;;
+  esac
+  if [ ! -f "$INBOX/$name" ]; then
+    echo "Not in the inbox: $INBOX/$name" >&2
+    exit 1
+  fi
+  mkdir -p "$INBOX/processed"
+  dest="$INBOX/processed/$(date +%Y-%m-%d)-$name"
+  [ -e "$dest" ] && dest="$INBOX/processed/$(date +%Y-%m-%d-%H%M%S)-$name"
+  mv "$INBOX/$name" "$dest"
+  echo "processed: $dest"
 }
 
 case "${1:-}" in
@@ -163,6 +266,9 @@ case "${1:-}" in
   init) init ;;
   backup) backup ;;
   compile-master) compile_master ;;
+  approve-master) approve_master ;;
+  intake) intake "${2:-}" ;;
+  done) done_file "${2:-}" ;;
   *)
     echo "$USAGE" >&2
     exit 2

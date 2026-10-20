@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
-"""PreToolUse guard for Hard Constraint 9: never browse workspace/tailored/.
+"""PreToolUse guard for Hard Constraint 9: never browse workspace/applications/.
 
 Registered by the plugin (hooks/hooks.json) and, for sessions in this repo
 without the plugin loaded, by .claude/settings.json. Reads the hook JSON on stdin
 and denies any Bash/Read/Write/Edit/Glob/Grep call that references the
-tailored/ output tree, unless EVERY reference points inside one concrete
-<Company>/<Role> folder (two wildcard-free path segments after "tailored").
+applications/ output tree, unless EVERY reference points inside one concrete
+<Company>/<Role> folder (two wildcard-free path segments after "applications").
 
-Allowed:  workspace/tailored/Acme/ml-engineer/resume.tex
-          ls "workspace/tailored/Acme Corp/data-scientist/"
-Denied:   ls workspace/tailored/
-          find workspace/tailored -maxdepth 2
-          Glob pattern workspace/tailored/**
-          Read of workspace/tailored/<Company>  (company level, no role)
+Allowed:  workspace/applications/Acme/ml-engineer/resume.tex
+          ls "workspace/applications/Acme Corp/data-scientist/"
+Denied:   ls workspace/applications/
+          find workspace/applications -maxdepth 2
+          Glob pattern workspace/applications/**
+          Read of workspace/applications/<Company>  (company level, no role)
 
 Batch operations across folders belong in engine/scripts/ (e.g.
 check_resume.py), which this guard does not inspect the internals of.
@@ -30,7 +30,7 @@ import sys
 
 # tool -> which tool_input fields hold paths/commands worth checking.
 # Grep's "pattern" is deliberately excluded: searching file CONTENT for the
-# word "tailored" (e.g. in a SKILL.md) is not a folder access.
+# word "applications" (e.g. in a SKILL.md) is not a folder access.
 FIELDS = {
     "Bash": ["command"],
     "Read": ["file_path"],
@@ -40,18 +40,18 @@ FIELDS = {
     "Grep": ["path", "glob"],
 }
 
-TAILORED_DIR = "workspace/tailored"
+APPLICATIONS_DIR = "workspace/applications"
 
 # a concrete segment: no glob chars, not empty (spaces allowed for
 # companies like "Acme Corp")
 SEGMENT = r"[^/*?\[\]{}]+"
-TAILORED_REF = re.compile(re.escape(TAILORED_DIR) + r"(?![A-Za-z0-9_-])")
+APPLICATIONS_REF = re.compile(re.escape(APPLICATIONS_DIR) + r"(?![A-Za-z0-9_-])")
 CONCRETE = re.compile(rf"^/{SEGMENT}/{SEGMENT}")
 
 
 def refs_ok(text: str) -> bool:
-    """Every 'tailored' path reference must continue with /<Company>/<Role>."""
-    for m in TAILORED_REF.finditer(text):
+    """Every 'applications' path reference must continue with /<Company>/<Role>."""
+    for m in APPLICATIONS_REF.finditer(text):
         if not CONCRETE.match(text[m.end():]):
             return False
     return True
@@ -62,7 +62,7 @@ def bash_ok(command: str) -> bool:
         tokens = shlex.split(command, posix=True)
     except ValueError:
         tokens = command.split()
-    return all(refs_ok(t) for t in tokens if TAILORED_DIR in t)
+    return all(refs_ok(t) for t in tokens if APPLICATIONS_DIR in t)
 
 
 def main():
@@ -74,7 +74,7 @@ def main():
     tool_input = data.get("tool_input", {}) or {}
     for field in FIELDS.get(tool, []):
         value = tool_input.get(field)
-        if not isinstance(value, str) or TAILORED_DIR not in value:
+        if not isinstance(value, str) or APPLICATIONS_DIR not in value:
             continue
         ok = bash_ok(value) if tool == "Bash" else refs_ok(value)
         if not ok:
@@ -83,9 +83,9 @@ def main():
                     "hookEventName": "PreToolUse",
                     "permissionDecision": "deny",
                     "permissionDecisionReason": (
-                        "Hard Constraint 9: workspace/tailored/ is write-once "
+                        "Hard Constraint 9: workspace/applications/ is write-once "
                         "output, not reference material. Access it only via a full "
-                        "tailored/<Company>/<Role>/ path (no listing, globbing, or "
+                        "applications/<Company>/<Role>/ path (no listing, globbing, or "
                         "browsing). If the target is ambiguous, ask the user. Batch "
                         "operations belong in engine/scripts/."
                     ),

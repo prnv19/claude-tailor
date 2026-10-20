@@ -16,7 +16,7 @@ Ops: `init` · `ingest` · `lint` · `refactor` · `compile` · `rule` · `note`
 
 ## History before v2 (condensed)
 
-The wiki was first built inside one person's resume workspace. That full log held personal resume details, so it was condensed to the milestones below when the knowledge base became candidate-agnostic. The original entries are in git history before 2026-10-01.
+The wiki was first built inside one person's resume workspace. That full log held personal resume details, so it was condensed to the milestones below when the knowledge base became candidate-agnostic. The original entries are omitted from this repository.
 
 - **2026-05-19 to 2026-05-22**: wiki scaffolded on Karpathy's LLM Wiki pattern; first 8 guides ingested (igotanoffer, ai-resume-survival, resume-as-product, ds-keywords, tih, power-packed xlsx, action-verbs PDF, condensed-template); `genai-llm-engineer` split from `ml-engineer`; post-bootstrap lint.
 - **2026-06-14**: rules added: no em dashes, no semicolons in any output.

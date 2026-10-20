@@ -3,7 +3,7 @@
 #
 # Usage: engine/scripts/scaffold.sh [-C <project-dir>] <Company> <Role>
 #
-# Creates workspace/tailored/<Company>/<Role>/ and copies
+# Creates workspace/applications/<Company>/<Role>/ and copies
 # workspace/master-resume.tex in as resume.tex, so the agent starts
 # from a byte-identical preamble (Hard Constraint 8 passes by
 # construction). The agent then regenerates each entry's
@@ -49,7 +49,7 @@ for slug in "$COMPANY" "$ROLE"; do
   esac
 done
 MASTER="$WORKSPACE/master-resume.tex"
-DEST="$WORKSPACE/tailored/$COMPANY/$ROLE"
+DEST="$WORKSPACE/applications/$COMPANY/$ROLE"
 
 if [ ! -f "$MASTER" ]; then
   echo "Master not found: $MASTER" >&2

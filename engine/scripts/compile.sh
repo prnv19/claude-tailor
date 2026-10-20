@@ -6,7 +6,7 @@
 # - Compiles resume.tex (and cover-letter.tex if present) unless specific
 #   tex names are given.
 # - All pdflatex scratch (.aux/.log/.out) goes to workspace/build/<Company>/<Role>/.
-# - Copies the final PDF next to its .tex in workspace/tailored/<Company>/<Role>/.
+# - Copies the final PDF next to its .tex in workspace/applications/<Company>/<Role>/.
 # - Removes any stray scratch files from the tailored dir.
 # - Runs check_resume.py (mechanical Hard Constraint checks) at the end.
 #
@@ -51,7 +51,7 @@ for slug in "$COMPANY" "$ROLE"; do
   esac
 done
 
-TAILORED="$WORKSPACE/tailored/$COMPANY/$ROLE"
+TAILORED="$WORKSPACE/applications/$COMPANY/$ROLE"
 BUILD="$WORKSPACE/build/$COMPANY/$ROLE"
 
 # pdflatex may not be on PATH in non-login shells (MacTeX installs to
@@ -104,7 +104,7 @@ for f in $FILES; do
   fi
 done
 
-# Never leave scratch in tailored/
+# Never leave scratch in applications/
 rm -f "$TAILORED"/*.aux "$TAILORED"/*.log "$TAILORED"/*.out 2>/dev/null
 
 if [ $STATUS -ne 0 ]; then

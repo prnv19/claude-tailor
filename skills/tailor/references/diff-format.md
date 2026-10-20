@@ -7,19 +7,19 @@ Write `resume-diff.md` once, at /tailor step 7, after the final compile passes. 
 JD source: jd.md (saved verbatim in this folder)
 
 ### Keyword map (JD → resume evidence)
-- PyTorch → Experience > Acme bullet 2 (kept, promoted to first)
-- RAG → Projects > LegalQA bullet 1 (rewritten)
-- scikit-learn → GAP, no evidence in master
+- Salesforce → Experience > Acme bullet 2 (kept, promoted to first)
+- vendor negotiation → Experience > Globex bullet 1 (rewritten)
+- Tableau → GAP, no evidence in master
 
 ### Section changes
 **Skills**
-- BEFORE: Python, R, SQL, Java, ...
-- AFTER:  Python, SQL, PyTorch, Transformers, ...
-- Why: the JD emphasizes deep learning and LLMs. Demoted Java, added grouping.
+- BEFORE: Excel, HubSpot, Salesforce, Canva, ...
+- AFTER:  Salesforce, HubSpot, Excel (pivot tables, forecasting), ...
+- Why: the JD emphasizes CRM ownership and forecasting. Demoted Canva, added grouping.
 
 **Experience > <Employer> > bullet 3** (illustrative only, not real resume content)
-- BEFORE: Worked on customer churn model in Python.
-- AFTER:  Built XGBoost churn model on 12M-row dataset, lifting retention-campaign ROI by 18% (A/B tested over 6 weeks).
+- BEFORE: Responsible for the customer renewal process.
+- AFTER:  Redesigned the renewal outreach sequence for 1,200 accounts, lifting on-time renewals from 71% to 86% in two quarters.
 - Why: XYZ shape with quantified impact, mirroring the JD's "drive measurable business outcomes".
 
 ### Dropped
@@ -30,6 +30,6 @@ JD source: jd.md (saved verbatim in this folder)
 - Experience > Z bullet 1 keeps a short last line after trim and expand attempts both failed (Hard Constraint 10).
 
 ### Gaps to discuss with the user (do NOT auto-add)
-- "5+ years Kubernetes in production", no matching evidence.
-- "Published at NeurIPS/ICML", none on file.
+- "5+ years managing a P&L", no matching evidence.
+- "PMP certification", none on file.
 ```

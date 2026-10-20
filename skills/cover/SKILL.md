@@ -12,7 +12,7 @@ allowed-tools:
 
 # /cover: tailored cover letter
 
-Produce a one-page LaTeX cover letter for `workspace/tailored/<Company>/<Role>/`, following the wiki cover letter rulebook. Cover letters are on-request deliverables, never generated automatically during `/tailor`.
+Produce a one-page LaTeX cover letter for `workspace/applications/<Company>/<Role>/`, following the wiki cover letter rulebook. Cover letters are on-request deliverables, never generated automatically during `/tailor`.
 
 Arguments: $ARGUMENTS
 
@@ -24,13 +24,13 @@ Workspace preflight (already run for you):
 - `pdflatex=MISSING` or `latex-packages=MISSING`: say so up front. You can still draft the letter, but nothing compiles until `/setup` sorts the toolchain.
 - `today=` is the date for the letter and for the education tense check.
 
-**Paths.** `workspace=` is the absolute path of the user's `workspace/` folder, and every `workspace/...` path below means a path inside it. Call engine scripts as `bash "${CLAUDE_PLUGIN_ROOT}/engine/scripts/<name>.sh" -C "${CLAUDE_PROJECT_DIR}" ...`, so they find the workspace from any working directory.
+**Paths.** `workspace=` is the absolute path of the user's `workspace/` folder, and every `workspace/...` path below means a path inside it. Call engine scripts as `bash "${CLAUDE_PLUGIN_ROOT}/engine/scripts/<name>.sh" -C "${CLAUDE_PROJECT_DIR}" ...`, so they find the workspace from any working directory. Run each one as its own command, exactly in that form: never chain `;`, `&&`, `|`, or extras like `echo $?` or `pdfinfo` onto it. The pre-approved patterns match only the bare command, so anything added stops the user with a permission prompt, and the exit status reaches you anyway.
 
 ## Step 1: Resolve the target
 
-- If arguments name a company/role (e.g. `/cover NVIDIA ml-engineer`), check that `workspace/tailored/<Company>/<Role>/` exists with `test -d` on that one path, nothing more.
+- If arguments name a company/role (e.g. `/cover Acme marketing-manager`), check that `workspace/applications/<Company>/<Role>/` exists with `test -d` on that one path, nothing more.
 - If no arguments, use the Company/Role most recently discussed in this conversation (e.g. a resume just tailored).
-- If neither resolves unambiguously, **ask the user as a choice question** (`AskUserQuestion`): options are the Company/Role targets named in this conversation, and "Other" lets them type one. Do not `ls`, `find`, or glob `tailored/` to build that option list. Browsing past applications is banned (Hard Constraint 9), so the options come only from conversation context.
+- If neither resolves unambiguously, **ask the user as a choice question** (`AskUserQuestion`): options are the Company/Role targets named in this conversation, and "Other" lets them type one. Do not `ls`, `find`, or glob `applications/` to build that option list. Browsing past applications is banned (Hard Constraint 9), so the options come only from conversation context.
 - A tailored `resume.tex` must exist for the target (`test -f`). If it does not, say so and offer to run `/tailor` first.
 
 ## Step 2: Load rules and facts
@@ -41,7 +41,7 @@ Read, in order:
 1. `${CLAUDE_PLUGIN_ROOT}/knowledge/wiki/concepts/cover-letters.md`: the authoritative rulebook. Follow its "Rules for the tailoring agent" exactly.
 2. `${CLAUDE_PLUGIN_ROOT}/knowledge/wiki/concepts/voice.md`: voice and drafting rules.
 3. The target's `resume.tex` and `resume-diff.md`: approved facts, numbers, and phrasing.
-4. The JD: use `jd.md` in the target directory if present. Otherwise ask the user to paste the JD (and save it as `jd.md` in the target directory for future reference).
+4. The JD: use `jd.md` in the target directory if present. Otherwise ask the user to paste the JD, or to give its file path (`file: <path>`). Open a named file the same way `/tailor` Step 1 does, and never scan folders for one. Save its text as `jd.md` in the target directory (and if the file was moved into the inbox, run `workspace.sh done "<file name>"`).
 5. `workspace/master-resume.tex`: fallback for facts not in the tailored resume.
 
 ## Step 3: Gate 1, clarifiers (choice-style, batched)
@@ -98,11 +98,11 @@ Only a proceed selection authorizes Step 5. If a Gate 1 or Gate 2 answer, or an 
   ```
   This gives ~0.75in margins (roomier than the resume, still comfortably one page) while keeping the header's contact line on one line. Also drop `\raggedright` from the body (keep `\raggedbottom`) so the letter's prose paragraphs are justified like a normal letter, not ragged like resume bullets. **Dropping `\raggedright` re-enables `article`'s default first-line paragraph indent** (the master never shows it because `\raggedright` suppresses it). Add `\setlength{\parindent}{0pt}` right after the margin block so letter paragraphs stay flush-left block style instead of indenting. A real letter once shipped indented because this line was missing, so never drop it.
 - **Body spacing**: separate the date, greeting, each paragraph, and the signature with `\vspace{16pt}` (use `\vspace{20pt}` right before "Sincerely,"). This is roomier than the resume's tight rhythm on purpose, for the same reason as the margins.
-- **Never reference any tailored `resume.tex`, `cover-letter.tex`, or other `tailored/<Company>/<Role>/` artifact as a template source**, not even a recent or well-formatted one. `master-resume.tex` is the only permitted source for the document-class, packages, colors, custom commands, and header. (Tailored `resume.tex` and `resume-diff.md` are still read for facts per Step 2. This rule is about the LaTeX template only.)
+- **Never reference any tailored `resume.tex`, `cover-letter.tex`, or other `applications/<Company>/<Role>/` artifact as a template source**, not even a recent or well-formatted one. `master-resume.tex` is the only permitted source for the document-class, packages, colors, custom commands, and header. (Tailored `resume.tex` and `resume-diff.md` are still read for facts per Step 2. This rule is about the LaTeX template only.)
 - Update only the date (today's), the addressee block (hiring team + company), and the body paragraphs.
 - **Education tense**: read the end date of the newest Education entry in `workspace/master-resume.tex` and compare it with today's date. If that date has passed, describe the degree as completed, in the past tense ("I recently completed my Master of Science..."), never "pursuing" or "expected to graduate". If it reads "Present" or a future month, "pursuing" is correct. `check_resume.py` derives the same date and fails a letter that gets it wrong.
 - Escape LaTeX special characters in the body (%, &, $, #, _).
-- Save as `workspace/tailored/<Company>/<Role>/cover-letter.tex`.
+- Save as `workspace/applications/<Company>/<Role>/cover-letter.tex`.
 
 **Hard Constraint 8 (template spacing lock) does not apply to cover letters.** It exists to protect the resume's one-page fit and is enforced only on `resume.tex`. Cover letters use the standard-letter margins and spacing above instead, and `check_resume.py` does not flag them for it. Hard Constraints 1 (one page), 3 (truthful), 5 (no em dashes), and 6 (no semicolons or colons) still apply in full to cover letters.
 
@@ -112,7 +112,7 @@ Only a proceed selection authorizes Step 5. If a Gate 1 or Gate 2 answer, or an 
 bash "${CLAUDE_PLUGIN_ROOT}/engine/scripts/compile.sh" -C "${CLAUDE_PROJECT_DIR}" "<Company>" "<Role>" cover-letter.tex
 ```
 
-The script compiles into `workspace/build/<Company>/<Role>/`, copies `cover-letter.pdf` into the tailored folder, removes stray scratch files, and runs `check_resume.py`, which mechanically verifies the letter is one page with no em dashes, no semicolons, no fluff words, no cliches, and no in-progress degree language. A non-zero exit means a violation. Fix the `.tex` and re-run until it passes.
+The script compiles into `workspace/build/<Company>/<Role>/`, copies `cover-letter.pdf` into the tailored folder, removes stray scratch files, and runs `check_resume.py`, which mechanically verifies the letter is one page with no em dashes, no semicolons, no fluff words, no cliches, and no in-progress degree language. A non-zero exit means a violation. Fix the `.tex` and re-run until it passes. That run is the mechanical check, so don't add your own page-count or `grep` scripts on top: they aren't pre-approved, and each one stops the user with a permission prompt. Verify figures against master by reading the files.
 
 Then verify manually (the checker cannot do this): every number cited appears in `master-resume.tex` or the tailored `resume.tex`.
 
